@@ -132,7 +132,7 @@ Run against a 148-page RBI circular:
 | False positive rate | under 5% |
 | Network calls made | 0 |
 
-## Project structure
+## Project structure.
 
 ```
 backend/
