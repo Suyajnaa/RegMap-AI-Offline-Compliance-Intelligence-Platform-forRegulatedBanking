@@ -7,6 +7,29 @@ RegMap AI reads RBI, SEBI, MCA, and IBA circulars and converts them into Measura
 
 Built for the SuRaksha Cyber Hackathon 2.0, theme: Agentic Regulatory Intelligence & Compliance.
 
+## Fastest way to run this
+
+```bash
+git clone https://github.com/Suyajnaa/RegMap-AI-Offline-Compliance-Intelligence-Platform-forRegulatedBanking.git
+cd RegMap-AI-Offline-Compliance-Intelligence-Platform-forRegulatedBanking
+```
+
+**macOS / Linux:**
+```bash
+./setup.sh   # one-time, installs everything
+./run.sh     # starts the app
+```
+
+**Windows:**
+```bat
+setup.bat
+run.bat
+```
+
+That's it — `setup.sh`/`setup.bat` creates the Python environment, installs all dependencies, downloads the local NLP models, and installs the frontend packages, in one go. `run.sh`/`run.bat` starts both the backend and frontend together. Once it's running, open **http://localhost:5173**.
+
+You only need to run setup once. After that, `run.sh` / `run.bat` is all you need each time. Requires Python 3.9+ and Node.js 18+ already installed — see [Prerequisites](#prerequisites) below if you need to install those first. If anything goes wrong, see [Troubleshooting](#troubleshooting). If you'd rather run each step yourself by hand, the full manual walkthrough is further down.
+
 ## Screenshot
 
 ![Dashboard](docs/screenshots/dashboard.png)
