@@ -145,54 +145,203 @@ frontend/
 | PDF export | ReportLab, fpdf2 |
 | Infrastructure | Docker, Docker Compose |
 
-## Setup
+## Prerequisites
 
-### Docker
+Install these before you start. Each link goes to the official download page.
+
+| Tool | Minimum version | Check your version | Download |
+|---|---|---|---|
+| Python | 3.9 | `python --version` (or `python3 --version`) | https://www.python.org/downloads/ |
+| Node.js | 18 | `node --version` | https://nodejs.org/ |
+| Git | any recent version | `git --version` | https://git-scm.com/downloads |
+| Docker + Docker Compose (only if using the Docker setup) | any recent version | `docker --version` | https://www.docker.com/products/docker-desktop/ |
+
+On Windows, make sure "Add Python to PATH" is checked during the Python installer — if it isn't, `python` won't be recognized in the terminal afterward.
+
+## Setup — manual (recommended for development)
+
+This runs the backend and frontend as two separate local processes. You'll use two terminal windows.
+
+### Step 1 — Get the code
 
 ```bash
-git clone https://github.com/Suyajnaa/RegMap-AI-Offline-Compliance-Intelligence-Platform-for-Regulated-Banking.git
-cd RegMap-AI-Offline-Compliance-Intelligence-Platform-for-Regulated-Banking
+git clone https://github.com/Suyajnaa/RegMap-AI-Offline-Compliance-Intelligence-Platform-forRegulatedBanking.git
+cd RegMap-AI-Offline-Compliance-Intelligence-Platform-forRegulatedBanking
+```
+
+### Step 2 — Backend (Terminal 1)
+
+```bash
+cd backend
+```
+
+Create an isolated Python environment so this project's dependencies don't conflict with anything else on your machine:
+
+```bash
+python -m venv venv
+```
+
+Activate it. The command differs by OS:
+
+```bash
+# macOS / Linux
+source venv/bin/activate
+
+# Windows (Command Prompt)
+venv\Scripts\activate.bat
+
+# Windows (PowerShell)
+venv\Scripts\Activate.ps1
+```
+
+You'll know it worked if your terminal prompt now starts with `(venv)`.
+
+Install the Python dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+This installs Flask, the NLP libraries (spaCy, sentence-transformers), PDF/document parsing tools, and the testing framework. It can take a few minutes the first time.
+
+Download the local language models (one-time, needs internet for this step only):
+
+```bash
+python setup_models.py
+```
+
+This downloads the spaCy English model and the sentence-transformers model used for obligation extraction and similarity matching — roughly 100–150 MB combined. Once this finishes, no further internet access is needed for the app to function.
+
+Set up your environment file:
+
+```bash
+cp .env.example .env
+```
+
+The defaults in `.env.example` work as-is for local development — there's nothing you need to fill in to get started.
+
+Start the backend:
+
+```bash
+python app.py
+```
+
+You should see Flask startup output ending with something like `Running on http://127.0.0.1:5000`. Leave this terminal running.
+
+### Step 3 — Frontend (Terminal 2)
+
+Open a **new** terminal window (don't close the backend one), then:
+
+```bash
+cd RegMap-AI-Offline-Compliance-Intelligence-Platform-forRegulatedBanking/frontend
+npm install
+```
+
+This installs React, Vite, and the rest of the frontend dependencies. Takes a minute or two the first time.
+
+```bash
+npm run dev
+```
+
+You should see Vite output with a `Local: http://localhost:5173/` line. Leave this terminal running too.
+
+### Step 4 — Open it
+
+Go to **http://localhost:5173** in your browser.
+
+1. You'll land on a role-selection screen — pick any role (Administrator gives full access).
+2. In the left sidebar, click **Regulations**.
+3. Upload a PDF, DOCX, or image of a regulatory circular, or paste text directly.
+4. Wait a few seconds for processing — it runs locally, so this works without internet.
+5. Go to **Dashboard** to see the compliance score, risks, and obligations.
+6. Go to **MAP Tracker** to see each obligation broken into a Measurable Action Point with a department, deadline, and status you can update.
+
+### Stopping the app
+
+In each terminal, press `Ctrl+C`. To leave the Python virtual environment, type `deactivate`.
+
+### Starting it again later
+
+You don't need to repeat the install steps every time — only the first run requires `pip install`, `npm install`, and `setup_models.py`.
+
+```bash
+# Terminal 1
+cd backend
+source venv/bin/activate        # Windows: venv\Scripts\activate
+python app.py
+
+# Terminal 2
+cd frontend
+npm run dev
+```
+
+## Setup — Docker (recommended if you don't want to install Python/Node locally)
+
+```bash
+git clone https://github.com/Suyajnaa/RegMap-AI-Offline-Compliance-Intelligence-Platform-forRegulatedBanking.git
+cd RegMap-AI-Offline-Compliance-Intelligence-Platform-forRegulatedBanking
 
 cp .env.example .env
-
-cd backend && python setup_models.py && cd ..
-# One-time download of the spaCy and sentence-transformers models.
-# Requires internet for this step only — everything after this runs offline.
 
 docker-compose up --build -d
 ```
 
+The backend image downloads its spaCy language model automatically during the build step — no manual model setup needed for the Docker path. The first build needs internet access (to pull the base image and install dependencies); after that, the containers run without it.
+
+This builds and starts both the backend and frontend containers. First build takes a few minutes; subsequent starts are fast.
+
 Frontend: `http://localhost:5173`
 Backend: `http://localhost:5000`
 
-### Manual setup
+To stop everything:
 
-Backend:
 ```bash
-cd backend
-python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-python setup_models.py
-python app.py
+docker-compose down
 ```
 
-Frontend (separate terminal):
+To rebuild after changing code:
+
 ```bash
-cd frontend
-npm install
-npm run dev
+docker-compose up --build -d
 ```
 
-Open `http://localhost:5173`, pick a role on the login screen, then upload a circular under Regulations.
+## Analyzing a document without the UI
 
-### Without a file
+If you just want to test the pipeline directly against the API:
 
 ```bash
 curl -X POST http://localhost:5000/api/upload/text \
   -H "Content-Type: application/json" \
   -d '{"text": "Banks shall maintain a Board-approved cyber security policy within 30 days..."}'
 ```
+
+The response is the full analysis — obligations, MAPs, risks, departments, deadlines — as JSON.
+
+## Troubleshooting
+
+**`python: command not found` (or same for `pip`)**
+On some systems the commands are `python3` and `pip3` instead. Try those, or reinstall Python and make sure "Add to PATH" was checked.
+
+**`pip install -r requirements.txt` fails partway through**
+Usually a missing system build tool. On Windows, install the "Microsoft C++ Build Tools" if prompted. On macOS, run `xcode-select --install` first. On Debian/Ubuntu, `sudo apt install build-essential python3-dev`.
+
+**`python setup_models.py` fails or hangs**
+This step needs internet access — check your connection. If it's a corporate network blocking the download, try a different network once for this step only; after that the app runs without internet.
+
+**`npm install` fails or is extremely slow**
+Delete `frontend/node_modules` and `frontend/package-lock.json`, then run `npm install` again. If you're behind a corporate proxy, you may need to configure `npm config set proxy` first.
+
+**Port 5000 or 5173 is already in use**
+Something else on your machine is using that port. Either stop that process, or change the port: for the backend, set `PORT=5001` in `.env` and update `VITE_API_BASE_URL` to match; for the frontend, run `npm run dev -- --port 5174` instead.
+
+**The dashboard loads but shows no data**
+Make sure you've uploaded a document first under Regulations — the dashboard is empty until at least one analysis exists. Also confirm the backend terminal is still running and didn't crash; check it for an error message.
+
+**Backend starts but the frontend can't reach it (network errors in the browser console)**
+Check that `VITE_API_BASE_URL` in `.env` (and in `frontend/.env` if you have one there too) points to `http://localhost:5000/api` and that the backend terminal shows it's actually running on port 5000.
+
+**`ModuleNotFoundError` for spacy, flask, or anything in requirements.txt**
+Your virtual environment likely isn't activated. Re-run the activation command for your OS (Step 2 above) — your terminal prompt should show `(venv)` before running `python app.py`.
 
 ## Running the tests
 
@@ -245,4 +394,4 @@ See `CONTRIBUTING.md`. Issue and PR templates are in `.github/`.
 ## Contact
 
 Suyajnaa — suyajnaa@gmail.com
-Repository: https://github.com/Suyajnaa/RegMap-AI-Offline-Compliance-Intelligence-Platform-for-Regulated-Banking
+Repository: https://github.com/Suyajnaa/RegMap-AI-Offline-Compliance-Intelligence-Platform-forRegulatedBanking
