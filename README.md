@@ -1,4 +1,4 @@
-# RegMap AI — Offline Compliance Intelligence Platform for Regulated Banking
+# RegMap AI — Offline Compliance Intelligence Platform for Regulated Banking.
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
@@ -7,7 +7,7 @@ RegMap AI reads RBI, SEBI, MCA, and IBA circulars and converts them into Measura
 
 Built for the SuRaksha Cyber Hackathon 2.0, theme: Agentic Regulatory Intelligence & Compliance.
 
-## Fastest way to run this
+## Fastest way to run this.
 
 ```bash
 git clone https://github.com/Suyajnaa/RegMap-AI-Offline-Compliance-Intelligence-Platform-forRegulatedBanking.git
@@ -23,12 +23,12 @@ cd RegMap-AI-Offline-Compliance-Intelligence-Platform-forRegulatedBanking
 **Windows:**
 ```bat
 setup.bat
-run.bat
+run.bat.
 ```
 
 That's it — `setup.sh`/`setup.bat` creates the Python environment, installs all dependencies, downloads the local NLP models, and installs the frontend packages, in one go. `run.sh`/`run.bat` starts both the backend and frontend together. Once it's running, open **http://localhost:5173**.
 
-You only need to run setup once. After that, `run.sh` / `run.bat` is all you need each time. Requires Python 3.9+ and Node.js 18+ already installed — see [Prerequisites](#prerequisites) below if you need to install those first. If anything goes wrong, see [Troubleshooting](#troubleshooting). If you'd rather run each step yourself by hand, the full manual walkthrough is further down.
+You only need to run setup once. After that, `run.sh` / `run.bat` is all you need each time. Requires Python 3.9+ and Node.js 18+ already installed — see [Prerequisites](#prerequisites) below if you need to install those first. If anything goes wrong, see [Troubleshooting](#troubleshooting). If you'd rather run each step yourself by hand, the full manual walkthrough is further down...
 
 ## Screenshot
 
@@ -43,24 +43,24 @@ The top bar shows the **Offline AI Mode** indicator, confirming the analysis on 
 | Assign to the correct bank department | Per-obligation routing across IT/CISO, Legal, Compliance, Risk, HR, Operations, Finance, Treasury |
 | Autonomously validate completion | Resolving a MAP logs a history entry and updates the dashboard immediately |
 
-## The problem
+## The problem.
 
 A compliance officer reviewing a single regulatory circular by hand typically spends 40–60 hours on it. RBI alone issues 100+ circulars a year. Manual tracking in spreadsheets and email threads means deadlines get missed, and a missed obligation can carry penalties from ₹1 crore up to ₹250 crore under the DPDP Act 2023.
 
 Most compliance-review tools available today send documents to a cloud service for processing, which is a non-starter for a regulated bank handling unpublished regulatory material. RegMap AI was built specifically to avoid that: the obligation extraction, department routing, risk scoring, and MAP generation all run as a local NLP pipeline. No document, no extracted obligation, no compliance data leaves the machine it runs on, at any point.
 
-## What a MAP looks like
+## What a MAP looks like.
 
 ```
-MAP-001 | Priority: Critical | Department: IT / CISO
-Obligation: Banks shall maintain ISO 27001-aligned Information Security Policy
-Deadline:   30 days (28 Jul 2026)
-Evidence:   Board-approved policy document, ISO certification
-Penalty:    ₹1–5 Cr + RBI Regulatory Action (RBI CSF 2016)
-Status:     Pending → In Progress → Complete
+MAP-001 | Priority: Critical | Department: IT / CISO.
+Obligation: Banks shall maintain ISO 27001-aligned Information Security Policy.
+Deadline:   30 days (28 Jul 2026).
+Evidence:   Board-approved policy document, ISO certification.
+Penalty:    ₹1–5 Cr + RBI Regulatory Action (RBI CSF 2016).
+Status:     Pending → In Progress → Complete.
 ```
 
-## Features
+## Features.
 
 | Feature | Description |
 |---|---|
@@ -79,9 +79,9 @@ Status:     Pending → In Progress → Complete
 | Audit log | Every status change is timestamped and recorded |
 | PDF/JSON export | Generates a board-level compliance report |
 
-## Architecture
+## Architecture.
 
-Every stage of the pipeline reads from and writes to a single in-memory record called the Compliance Knowledge Object (CKO). Nothing is passed between stages as loose files or disconnected variables — it's one structured object from ingestion through to the final report.
+Every stage of the pipeline reads from and writes to a single in-memory record called the Compliance Knowledge Object (CKO). Nothing is passed between stages as loose files or disconnected variables — it's one structured object from ingestion through to the final report..
 
 ```
 Document (PDF / DOCX / image / pasted text)
@@ -120,7 +120,7 @@ React dashboard, AI Copilot, calendar, PDF export
 
 All 17 pipeline stages live under `backend/ai/`, one file per engine, all running locally with no external service calls.
 
-## Benchmark
+## Benchmark..
 
 Run against a 148-page RBI circular:
 
@@ -157,7 +157,7 @@ frontend/
                    AI Copilot, Compliance Calendar
 ```
 
-## Technology stack
+## Technology stack.
 
 | Layer | Technology |
 |---|---|
@@ -168,7 +168,7 @@ frontend/
 | PDF export | ReportLab, fpdf2 |
 | Infrastructure | Docker, Docker Compose |
 
-## Prerequisites
+## Prerequisites.
 
 Install these before you start. Each link goes to the official download page.
 
@@ -181,18 +181,18 @@ Install these before you start. Each link goes to the official download page.
 
 On Windows, make sure "Add Python to PATH" is checked during the Python installer — if it isn't, `python` won't be recognized in the terminal afterward.
 
-## Setup — manual (recommended for development)
+## Setup — manual (recommended for development).
 
 This runs the backend and frontend as two separate local processes. You'll use two terminal windows.
 
-### Step 1 — Get the code
+### Step 1 — Get the code.
 
 ```bash
 git clone https://github.com/Suyajnaa/RegMap-AI-Offline-Compliance-Intelligence-Platform-forRegulatedBanking.git
 cd RegMap-AI-Offline-Compliance-Intelligence-Platform-forRegulatedBanking
 ```
 
-### Step 2 — Backend (Terminal 1)
+### Step 2 — Backend (Terminal 1).
 
 ```bash
 cd backend
@@ -225,7 +225,7 @@ Install the Python dependencies:
 pip install -r requirements.txt
 ```
 
-This installs Flask, the NLP libraries (spaCy, sentence-transformers), PDF/document parsing tools, and the testing framework. It can take a few minutes the first time.
+This installs Flask, the NLP libraries (spaCy, sentence-transformers), PDF/document parsing tools, and the testing framework. It can take a few minutes the first time..
 
 Download the local language models (one-time, needs internet for this step only):
 
@@ -251,7 +251,7 @@ python app.py
 
 You should see Flask startup output ending with something like `Running on http://127.0.0.1:5000`. Leave this terminal running.
 
-### Step 3 — Frontend (Terminal 2)
+### Step 3 — Frontend (Terminal 2).
 
 Open a **new** terminal window (don't close the backend one), then:
 
@@ -266,9 +266,9 @@ This installs React, Vite, and the rest of the frontend dependencies. Takes a mi
 npm run dev
 ```
 
-You should see Vite output with a `Local: http://localhost:5173/` line. Leave this terminal running too.
+You should see Vite output with a `Local: http://localhost:5173/` line. Leave this terminal running too..
 
-### Step 4 — Open it
+### Step 4 — Open it.
 
 Go to **http://localhost:5173** in your browser.
 
@@ -279,11 +279,11 @@ Go to **http://localhost:5173** in your browser.
 5. Go to **Dashboard** to see the compliance score, risks, and obligations.
 6. Go to **MAP Tracker** to see each obligation broken into a Measurable Action Point with a department, deadline, and status you can update.
 
-### Stopping the app
+### Stopping the app.
 
 In each terminal, press `Ctrl+C`. To leave the Python virtual environment, type `deactivate`.
 
-### Starting it again later
+### Starting it again later.
 
 You don't need to repeat the install steps every time — only the first run requires `pip install`, `npm install`, and `setup_models.py`.
 
@@ -298,7 +298,7 @@ cd frontend
 npm run dev
 ```
 
-## Setup — Docker (recommended if you don't want to install Python/Node locally)
+## Setup — Docker (recommended if you don't want to install Python/Node locally).
 
 ```bash
 git clone https://github.com/Suyajnaa/RegMap-AI-Offline-Compliance-Intelligence-Platform-forRegulatedBanking.git
@@ -309,9 +309,9 @@ cp .env.example .env
 docker-compose up --build -d
 ```
 
-The backend image downloads its spaCy language model automatically during the build step — no manual model setup needed for the Docker path. The first build needs internet access (to pull the base image and install dependencies); after that, the containers run without it.
+The backend image downloads its spaCy language model automatically during the build step — no manual model setup needed for the Docker path. The first build needs internet access (to pull the base image and install dependencies); after that, the containers run without it..
 
-This builds and starts both the backend and frontend containers. First build takes a few minutes; subsequent starts are fast.
+This builds and starts both the backend and frontend containers. First build takes a few minutes; subsequent starts are fast..
 
 Frontend: `http://localhost:5173`
 Backend: `http://localhost:5000`
